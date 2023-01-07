@@ -39,7 +39,11 @@ class _Pages extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
+
+    final navigationModel = Provider.of<_NavigationModel>(context);
+
     return PageView(
+      controller: navigationModel.pageController,
      //physics: BouncingScrollPhysics(), //*para hacer swipe entre pantallas
      physics: const NeverScrollableScrollPhysics(), //*bloquear swipe
      children: <Widget>[
@@ -62,13 +66,19 @@ class _Pages extends StatelessWidget {
 class _NavigationModel with ChangeNotifier{ //<- para utilizar notifyListeners();
 
   int _actualPage = 0;
+  PageController _pageController = new PageController();
 
   int get actualPage => this._actualPage;
 
   set actualPage( int value){
     this._actualPage = value;
+
+    _pageController.animateToPage(value, duration: Duration(milliseconds: 250), curve: Curves.easeOut);
+
     notifyListeners(); //se debe añadir with ChangeNotifier
   }
+
+  PageController get pageController => this._pageController;
 
 
 }
