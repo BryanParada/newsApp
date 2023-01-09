@@ -12,9 +12,10 @@ final _APIKEY = dotenv.env['API_KEY'].toString();
 class NewsService with ChangeNotifier{
 
   List<Article?> headlines = [];
+  String _selectedCategory = 'business';
 
   List<Category> categories = [
-    Category( FontAwesomeIcons.building, 'businesss'),
+    Category( FontAwesomeIcons.building, 'business'),
     Category( FontAwesomeIcons.tv, 'entertainment'),
     Category( FontAwesomeIcons.addressCard, 'general'),
     Category( FontAwesomeIcons.headSideVirus, 'health'),
@@ -25,10 +26,22 @@ class NewsService with ChangeNotifier{
  
   ];
 
-  NewsService() {
+  Map<String, List<Article>> categoryArticles = {};
 
-    this.getTopHeadlines();
+  NewsService() { 
+    this.getTopHeadlines(); 
 
+    categories.forEach((item) { 
+      this.categoryArticles[item.name] = []; //new List()
+    });
+  }
+
+  String get selectedCategory => this._selectedCategory;
+  set selectedCategory(String value){
+    this._selectedCategory = value;
+
+    this.getArticlesByCategory( value );
+    notifyListeners();
   }
 
   getTopHeadlines() async {
@@ -38,14 +51,31 @@ class NewsService with ChangeNotifier{
     final resp = await http.get(uri); 
     //final resp = await Uri.parse(url);
 
-    final newsResponse = NewsResponse.fromJson(resp.body);
+    final newsResponse = newsResponseFromJson(resp.body);
 
-    this.headlines.addAll( newsResponse.articles!);
+    this.headlines.addAll( newsResponse.articles);
     notifyListeners();
 
     
   }
 
+
+  getArticlesByCategory ( String category)async{
+
+    if ( this.categoryArticles[category]!.length > 0){
+      return this.categoryArticles[category];
+    }
+
+    final url = '$_URL_NEWS/top-headlines?apiKey=$_APIKEY&country=us&category=${category}';
+    final uri = Uri.parse(url);
+    final resp = await http.get(uri);  
+
+    final newsResponse = newsResponseFromJson(resp.body);
+
+    categoryArticles[category]!.addAll( newsResponse.articles ); 
+    notifyListeners();
+
+  }
 
 
 }
