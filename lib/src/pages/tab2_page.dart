@@ -2,17 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:news_app/src/models/category_model.dart';
 import 'package:news_app/src/services/news_service.dart';
 import 'package:news_app/src/theme/theme.dart';
+import 'package:news_app/src/widgets/list_news.dart';
 import 'package:provider/provider.dart';
 
 class Tab2Page extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+
+    final newsService  = Provider.of<NewsService>(context);
     return Scaffold(
       body: Column(
         children: <Widget>[
 
-          Expanded(child: _ListCategory()),
+          // Expanded(child: _ListCategory()),
+          _ListCategory(),
+
+          Expanded(
+            child: ListNews( newsService.getArticlesCategorySelected ),
+          ),
 
 
         ],
@@ -28,25 +36,35 @@ class _ListCategory extends StatelessWidget {
 
     final categories = Provider.of<NewsService>(context).categories;
 
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      itemCount: categories.length,
-      itemBuilder: (BuildContext context, int index) {
+    return Container(
+      width: double.infinity,
+      height: 80,
+      // color: Colors.red,
+      child: Container(
+        width: double.infinity,
+        height: 80,
+        //color: Colors.red,
+        child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemCount: categories.length,
+          itemBuilder: (BuildContext context, int index) {
 
-        final cName = categories[index].name;
+            final cName = categories[index].name;
 
-        return Padding(
-          padding: EdgeInsets.all(8),
-          child: Column(
-            children: <Widget>[
-              _CategoryButtton(categories[index]),
-              SizedBox(height: 5,),
-              Text( '${cName[0].toUpperCase()}${cName.substring(1)}')
-            ],
-          )
-          );
-      },
+            return Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                children: <Widget>[
+                  _CategoryButtton(categories[index]),
+                  SizedBox(height: 5,),
+                  Text( '${cName[0].toUpperCase()}${cName.substring(1)}')
+                ],
+              )
+              );
+          },
+        ),
+      ),
     );
   }
 }
