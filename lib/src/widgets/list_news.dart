@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/src/models/news_models.dart';
 import 'package:news_app/src/theme/theme.dart';
+import 'package:flutter_share/flutter_share.dart';
+
 
 class ListNews extends StatelessWidget {
  
@@ -42,7 +44,7 @@ class _News extends StatelessWidget {
 
         _BodyCard( news ),
 
-        _ButtonCard(),
+        _ButtonCard( news ),
 
         SizedBox(height: 10,),
         Divider(),
@@ -109,6 +111,10 @@ class _BodyCard extends StatelessWidget {
 
 class _ButtonCard extends StatelessWidget { 
 
+  final Article news;
+
+  const _ButtonCard(this.news);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -135,7 +141,9 @@ class _ButtonCard extends StatelessWidget {
           SizedBox(width: 10,),
 
           RawMaterialButton(
-            onPressed: (){},
+            onPressed: (){
+              _shareUrl( news.url as String);
+            },
             fillColor: Colors.green, //accentcolor
             shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(20)),
             child: Icon( Icons.share),
@@ -146,6 +154,8 @@ class _ButtonCard extends StatelessWidget {
     );
   }
 }
+
+
 
 class _TopBarCard extends StatelessWidget { 
 
@@ -167,4 +177,14 @@ class _TopBarCard extends StatelessWidget {
       ),
     );
   }
+}
+
+_shareUrl(String url) async {
+ 
+    await FlutterShare.share(
+      title: 'Sharing News',
+      text: 'Hey check this news!: $url ',
+      linkUrl: url,
+      chooserTitle: 'Share URL with:',
+    );
 }
