@@ -12,23 +12,25 @@ class Tab2Page extends StatelessWidget {
 
     final newsService  = Provider.of<NewsService>(context);
     return Scaffold(
-      body: Column(
-        children: <Widget>[
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
 
-          // Expanded(child: _ListCategory()),
-          _ListCategory(),
+            // Expanded(child: _ListCategory()),
+            _ListCategory(),
 
-          // Expanded(
-          //   child: ListNews( newsService.getArticlesCategorySelected ),
-          // ),
+            // Expanded(
+            //   child: ListNews( newsService.getArticlesCategorySelected ),
+            // ),
 
-          Expanded(
-            child: (newsService.categoryArticles[newsService.selectedCategory]!.length == 0) 
-            ? Center(child: CircularProgressIndicator(color: myTheme.colorScheme.secondary,),)
-            : ListNews(newsService.getArticlesCategorySelected)
-          ),
+            Expanded(
+              child: (newsService.categoryArticles[newsService.selectedCategory]!.length == 0) 
+              ? Center(child: CircularProgressIndicator(color: myTheme.colorScheme.secondary,),)
+              : ListNews(newsService.getArticlesCategorySelected)
+            ),
 
-        ],
+          ],
+        ),
       )
     );
   }
